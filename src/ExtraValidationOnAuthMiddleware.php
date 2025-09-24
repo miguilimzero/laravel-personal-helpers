@@ -25,7 +25,7 @@ class ExtraValidationOnAuthMiddleware
                 if (class_exists('Inertia\Inertia')) {
                     \Inertia\Inertia::share([
                         'captcha.driver' => config('captcha.driver'),
-                        'captcha.siteKey' => config('captcha.siteKey'),
+                        'captcha.siteKey' => config('captcha.site_key'),
                     ]);
                 }
             }
