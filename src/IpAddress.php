@@ -4,6 +4,7 @@ namespace Miguilim\Helpers;
 
 use InvalidArgumentException;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -80,7 +81,7 @@ class IpAddress extends Model
      * @param mixed $id
      * @param mixed $columns
      *
-     * @return self
+     * @return static
      */
     public static function find($id, $columns = ['*'])
     {
@@ -90,25 +91,39 @@ class IpAddress extends Model
             throw new InvalidArgumentException('IpAddress::find() expects a string as the first parameter.');
         }
 
-        $result = self::whereKey($id)->first($columns);
+        $result = static::whereKey($id)->first($columns);
 
         if ($result) {
             if ($result->updated_at < now()->subMinutes($config['cache_duration'])) {
-                return self::updateOrCreateIpAddress($id) ?? $result;
+                return static::updateOrCreateIpAddress($id) ?? $result;
             }
 
             return $result;
         }
 
-        return self::updateOrCreateIpAddress($id) ?? new self(['ip_address' => $id]);
+        return static::updateOrCreateIpAddress($id) ?? new static(['ip_address' => $id]);
     }
 
     /**
      * Create a new element with current request ip address.
      */
-    public static function currentRequest(): self
+    public static function currentRequest(): static
     {
-        return self::find(optional(request())->ip());
+        return static::find(optional(request())->ip());
+    }
+
+    /**
+     * Get country code from a request object using CF or fallback to IP query.
+     */
+    public static function getCountryCodeFromRequest(Request $request): string
+    {
+        $cloudflareHeader = $request->header('CF-IPCountry');
+
+        if ($cloudflareHeader !== null && is_string($cloudflareHeader)) {
+            return $cloudflareHeader;
+        }
+
+        return static::find($request->ip())->country_code ?? 'XX';
     }
 
     /**
@@ -132,11 +147,11 @@ class IpAddress extends Model
 
         if ($config['key']) {
             if ($config['driver'] === 'proxycheck') {
-                $result = self::proxyCheckRequest($ipAddress, $config);
+                $result = static::proxyCheckRequest($ipAddress, $config);
             } elseif ($config['driver'] === 'ipregistry') {
-                $result = self::ipRegistryRequest($ipAddress, $config);
+                $result = static::ipRegistryRequest($ipAddress, $config);
             } elseif ($config['driver'] === 'ipqualityscore') {
-                $result = self::ipQualityScoreRequest($ipAddress, $config);
+                $result = static::ipQualityScoreRequest($ipAddress, $config);
             } else {
                 throw new InvalidArgumentException("Driver [{$config['driver']}] is not supported.");
             }
@@ -150,7 +165,7 @@ class IpAddress extends Model
 
         // Ensure that it will not try to create with an existing row
 
-        return self::updateOrCreate(['ip_address' => $ipAddress], $result);
+        return static::updateOrCreate(['ip_address' => $ipAddress], $result);
     }
 
     /**
