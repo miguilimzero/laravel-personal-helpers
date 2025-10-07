@@ -21,6 +21,9 @@ class MiguilimHelpersServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configurePublishing();
+
+        config(['app.editor' => env('APP_EDITOR', 'zed')]);
+
     }
 
     /**
