@@ -7,7 +7,8 @@
   "type": "library",
   "require": {
     "illuminate/support": "^12.0",
-    "mobiledetect/mobiledetectlib": "^4.8"
+    "mobiledetect/mobiledetectlib": "^4.8",
+    "flowframe/laravel-trend": "^0.4.0"
   },
   "autoload": {
     "psr-4": {
