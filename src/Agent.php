@@ -65,7 +65,7 @@ class Agent extends MobileDetect
      */
     public function platform()
     {
-        return $this->retrieveUsingCacheOrResolve('jetstream.platform', function () {
+        return $this->retrieveUsingCacheOrResolve('miguilim-agent.platform', function () {
             return $this->findDetectionRulesAgainstUserAgent(
                 $this->mergeRules(MobileDetect::getOperatingSystems(), static::$additionalOperatingSystems)
             );
@@ -79,7 +79,7 @@ class Agent extends MobileDetect
      */
     public function browser()
     {
-        return $this->retrieveUsingCacheOrResolve('jetstream.browser', function () {
+        return $this->retrieveUsingCacheOrResolve('miguilim-agent.browser', function () {
             return $this->findDetectionRulesAgainstUserAgent(
                 $this->mergeRules(static::$additionalBrowsers, MobileDetect::getBrowsers())
             );
