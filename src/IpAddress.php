@@ -173,7 +173,7 @@ class IpAddress extends Model
      */
     protected static function proxyCheckRequest(string $ip, array $config): ?array
     {
-        $response = Http::timeout(5)->get("https://proxycheck.io/v2/{$ip}?key={$config['key']}&vpn=1&asn=1&risk=1")->json();
+        $response = Http::timeout(5)->get("https://proxycheck.io/v3/{$ip}?key={$config['key']}")->json();
 
         if (! isset($response[$ip])) { // Cannot check status === 'ok', since status is not always ok, even when the request is successful
             return null;
@@ -181,19 +181,27 @@ class IpAddress extends Model
 
         $response = $response[$ip];
 
+        $isBlock = $response['detections']['proxy']
+            || $response['detections']['vpn']
+            || $response['detections']['compromised']
+            || $response['detections']['scraper']
+            || $response['detections']['tor']
+            || $response['detections']['hosting']
+            || $response['detections']['anonymous'];
+
         return [
             'ip_address' => $ip,
-            'asn' => (int) str_replace('AS', '', $response['asn'] ?? '-1'),
-            'continent' => $response['continent'],
-            'country' => $response['country'] ?? 'Unknown',
-            'country_code' => $response['isocode'] ?? 'XX',
-            'region' => $response['region'] ?? 'Unknown',
-            'region_code' => $response['regioncode'] ?? '00',
-            'city' => $response['city'] ?? 'Unknown',
-            'latitude' => $response['latitude'] ?? 0,
-            'longitude' => $response['longitude'] ?? 0,
-            'risk' => (int) ($response['risk'] ?? '100'),
-            'block' => $response['proxy'] === 'yes',
+            'asn' => (int) str_replace('AS', '', $response['network']['asn']),
+            'continent' => $response['location']['continent_code'],
+            'country' => $response['location']['country_name'],
+            'country_code' => $response['location']['country_code'],
+            'region' => $response['location']['region_name'],
+            'region_code' => $response['location']['region_code'],
+            'city' => $response['location']['city_name'],
+            'latitude' => $response['location']['latitude'],
+            'longitude' => $response['location']['longitude'],
+            'risk' => $response['detections']['risk'],
+            'block' => $isBlock,
             'driver' => 'proxycheck',
         ];
     }
@@ -228,7 +236,7 @@ class IpAddress extends Model
             'city' => $response['location']['city'],
             'latitude' => $response['location']['latitude'],
             'longitude' => $response['location']['longitude'],
-            'risk' => ($isBlock) ? 100 : 0,
+            'risk' => $isBlock ? 100 : 0,
             'block' => $isBlock,
             'driver' => 'ipregistry',
         ];
