@@ -4,6 +4,9 @@ namespace Miguilim\Helpers;
 
 use Illuminate\Support\ServiceProvider;
 
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Middleware\TrustProxies;
+
 class MiguilimHelpersServiceProvider extends ServiceProvider
 {
     /**
@@ -22,8 +25,13 @@ class MiguilimHelpersServiceProvider extends ServiceProvider
     {
         $this->configurePublishing();
 
+        Model::shouldBeStrict(config('app.debug'));
+
         config(['app.editor' => env('APP_EDITOR', 'zed')]);
 
+        if (config('app.debug') && str_starts_with(config('app.url'), 'https')) {
+            TrustProxies::at('*');
+        }
     }
 
     /**
