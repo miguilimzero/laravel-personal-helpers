@@ -274,7 +274,7 @@ class IpAddress extends Model
             'country' => locale_get_display_region("-{$response['country_code']}", 'en'),
             'country_code' => $response['country_code'],
             'region' => $response['region'],
-            'region_code' => 'XX',
+            'region_code' => null,
             'city' => $response['city'],
             'latitude' => $response['latitude'],
             'longitude' => $response['longitude'],
