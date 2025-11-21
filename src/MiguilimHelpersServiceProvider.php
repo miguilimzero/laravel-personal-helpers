@@ -7,8 +7,6 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Middleware\TrustProxies;
 
-use Barryvdh\Debugbar\ServiceProvider as DebugbarServiceProvider;
-
 class MiguilimHelpersServiceProvider extends ServiceProvider
 {
     /**
@@ -19,7 +17,9 @@ class MiguilimHelpersServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/captcha.php', 'captcha');
         $this->mergeConfigFrom(__DIR__ . '/../config/ip_address.php', 'ip_address');
 
-        $this->app->register(DebugbarServiceProvider::class);
+        if (class_exists(\Barryvdh\Debugbar\ServiceProvider::class)) {
+             $this->app->register(\Barryvdh\Debugbar\ServiceProvider::class);
+        }
     }
 
     /**
