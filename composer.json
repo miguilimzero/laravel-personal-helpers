@@ -13,6 +13,9 @@
   "require-dev": {
     "barryvdh/laravel-debugbar": "^3.16"
   },
+  "suggest": {
+    "barryvdh/laravel-debugbar": "For development debugging - require it as a dev dependency in your project"
+  },
   "autoload": {
     "psr-4": {
       "Miguilim\\Helpers\\": "src/"
