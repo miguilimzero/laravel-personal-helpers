@@ -11,10 +11,10 @@
     "flowframe/laravel-trend": "^0.4.0"
   },
   "require-dev": {
-    "barryvdh/laravel-debugbar": "^3.16"
+    "fruitcake/laravel-debugbar": "^4.0"
   },
   "suggest": {
-    "barryvdh/laravel-debugbar": "For development debugging - require it as a dev dependency in your project"
+    "fruitcake/laravel-debugbar": "For development debugging - require it as a dev dependency in your project"
   },
   "autoload": {
     "psr-4": {
