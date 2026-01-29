@@ -1,9 +1,5 @@
 # Laravel Personal Helpers
 
-## Models
-
-- `\Miguilim\Helpers\IpAddress`
-
 ## Middlewares
 
 - `\Miguilim\Helpers\CaptchaValidationOnAuthMiddleware`
@@ -13,6 +9,10 @@
 
 - `captcha`
 - `ip_address`
+- 
+## Models
+
+- `\Miguilim\Helpers\IpAddress`
 
 ## Others
 
