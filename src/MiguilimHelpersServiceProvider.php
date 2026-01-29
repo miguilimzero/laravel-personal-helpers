@@ -17,8 +17,8 @@ class MiguilimHelpersServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/captcha.php', 'captcha');
         $this->mergeConfigFrom(__DIR__ . '/../config/ip_address.php', 'ip_address');
 
-        if (class_exists(\Barryvdh\Debugbar\ServiceProvider::class)) {
-             $this->app->register(\Barryvdh\Debugbar\ServiceProvider::class);
+        if (class_exists(\Fruitcake\LaravelDebugbar\ServiceProvider::class)) {
+             $this->app->register(\Fruitcake\LaravelDebugbar\ServiceProvider::class);
         }
     }
 
