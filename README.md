@@ -20,3 +20,4 @@
 - `\Miguilim\Helpers\Agent`
 - `\Miguilim\Helpers\Locale`
 - `\Miguilim\Helpers\Trend`
+- `\Miguilim\Helpers\HasFilamentDateFilters` (Trait)
