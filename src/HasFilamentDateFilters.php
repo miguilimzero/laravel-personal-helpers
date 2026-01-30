@@ -104,8 +104,11 @@ trait HasFilamentDateFilters
             $set('interval', 'perDay');
         }
 
-        if ($get('startDate') && $get('endDate') && Carbon::parse($get('endDate'))->lt(Carbon::parse($get('startDate')))) {
-            $set('endDate', $get('startDate'));
+        $startDate = Carbon::parse($get('startDate'));
+        $endDate = Carbon::parse($get('endDate'));
+
+        if ($endDate->lt($startDate)) {
+            $set('endDate', $startDate->copy()->endOfDay()->format('Y-m-d H:i:s'));
         }
 
         $this->updateDateFields($set, $get('preset'));
