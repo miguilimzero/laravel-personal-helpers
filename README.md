@@ -9,7 +9,7 @@
 
 - `captcha`
 - `ip_address`
-- 
+
 ## Models
 
 - `\Miguilim\Helpers\IpAddress`
