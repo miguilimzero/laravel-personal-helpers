@@ -21,6 +21,11 @@ trait HasFilamentDateFilters
 {
     use HasFiltersForm;
 
+    public function persistsFiltersInSession(): bool
+    {
+        return false;
+    }
+
     public function filtersForm(Schema $schema): Schema
     {
         return $schema->columns([
@@ -73,7 +78,7 @@ trait HasFilamentDateFilters
                             $this->checkValidation($set, $get);
                         })
                         ->native(false)
-                        ->default(today()->subDays(Agent::currentRequest()->isDesktop() ? 30 : 7))
+                        ->default(today()->subDays(Agent::currentRequest()->isDesktop() ? 30 : 7)->startOfDay())
                         ->columnSpan(2),
 
                     DatePicker::make('endDate')
@@ -84,8 +89,8 @@ trait HasFilamentDateFilters
                         })
                         ->native(false)
                         ->minDate(fn (Get $get) => $get('startDate'))
-                        ->maxDate(today())
-                        ->default(today())
+                        ->maxDate(today()->endOfDay())
+                        ->default(today()->endOfDay())
                         ->columnSpan(2),
                 ]),
         ]);
@@ -108,32 +113,33 @@ trait HasFilamentDateFilters
 
     protected function updateDateFields(Set $set, string $preset): void
     {
-        $today  = Carbon::today();
-        $format = 'Y-m-d';
+        $today  = Carbon::today()->startOfDay();
+        $format = 'Y-m-d H:i:s';
 
         if ($preset === 'today') {
             $set('startDate', $today->format($format));
-            $set('endDate', $today->format($format));
+            $set('endDate', $today->copy()->endOfDay()->format($format));
         }
         if ($preset === 'yesterday') {
             $set('startDate', $today->copy()->subDay()->format($format));
-            $set('endDate', $today->copy()->subDay()->format($format));
+            $set('endDate', $today->copy()->endOfDay()->subDay()->format($format));
         }
         if ($preset === '7d') {
             $set('startDate', $today->copy()->subDays(7)->format($format));
-            $set('endDate', $today->format($format));
+            $set('endDate', $today->copy()->endOfDay()->format($format));
         }
         if ($preset === '30d') {
             $set('startDate', $today->copy()->subDays(30)->format($format));
-            $set('endDate', $today->format($format));
+            $set('endDate', $today->copy()->endOfDay()->format($format));
         }
         if ($preset === '90d') {
+
             $set('startDate', $today->copy()->subDays(90)->format($format));
-            $set('endDate', $today->format($format));
+            $set('endDate', $today->copy()->endOfDay()->format($format));
         }
         if ($preset === '365d') {
             $set('startDate', $today->copy()->subDays(365)->format($format));
-            $set('endDate', $today->format($format));
+            $set('endDate', $today->copy()->endOfDay()->format($format));
         }
 
         if ($preset !== 'custom') {
